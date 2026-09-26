@@ -1,0 +1,181 @@
+{
+    "dataset_metadata": {
+        "dataset_name": "Mall Customer Segmentation Dataset",
+        "total_records": 200,
+        "total_features": 5,
+        "missing_values": 0,
+        "clustering_features": [
+            "Annual Income (k$)",
+            "Spending Score (1-100)"
+        ],
+        "classifier_features": [
+            "Age",
+            "Gender",
+            "Annual Income (k$)",
+            "Spending Score (1-100)"
+        ]
+    },
+    "clustering_metrics": {
+        "optimal_k": 5,
+        "selection_method": "Silhouette Score Maximization (K=2..10)",
+        "peak_silhouette_score": 0.5546571631111091,
+        "inertia_at_k5": 65.56840815571681,
+        "k_evaluation_table": [
+            {
+                "k": 2,
+                "inertia": 269.69101219276394,
+                "silhouette_score": 0.3212707813918878
+            },
+            {
+                "k": 3,
+                "inertia": 157.70400815035947,
+                "silhouette_score": 0.46658474419000145
+            },
+            {
+                "k": 4,
+                "inertia": 108.92131661364357,
+                "silhouette_score": 0.4939069237513199
+            },
+            {
+                "k": 5,
+                "inertia": 65.56840815571681,
+                "silhouette_score": 0.5546571631111091
+            },
+            {
+                "k": 6,
+                "inertia": 55.057348270386,
+                "silhouette_score": 0.5398800926790663
+            },
+            {
+                "k": 7,
+                "inertia": 44.86475569922557,
+                "silhouette_score": 0.5281492781108291
+            },
+            {
+                "k": 8,
+                "inertia": 37.228187677585886,
+                "silhouette_score": 0.4552147906587443
+            },
+            {
+                "k": 9,
+                "inertia": 32.392267630331176,
+                "silhouette_score": 0.4570853966942764
+            },
+            {
+                "k": 10,
+                "inertia": 29.981897788243693,
+                "silhouette_score": 0.4431713026508046
+            }
+        ]
+    },
+    "classifier_metrics": {
+        "algorithm": "RandomForestClassifier with CalibratedClassifierCV (Platt scaling)",
+        "n_estimators": 200,
+        "calibration_method": "sigmoid",
+        "calibration_folds": 5,
+        "train_samples": 160,
+        "test_samples": 40,
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "roc_auc": 1.0,
+        "brier_score_loss": 0.003579483088672912,
+        "confusion_matrix": {
+            "true_negative": 32,
+            "false_positive": 0,
+            "false_negative": 0,
+            "true_positive": 8
+        },
+        "classification_report": {
+            "0": {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1-score": 1.0,
+                "support": 32.0
+            },
+            "1": {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1-score": 1.0,
+                "support": 8.0
+            },
+            "accuracy": 1.0,
+            "macro avg": {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1-score": 1.0,
+                "support": 40.0
+            },
+            "weighted avg": {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1-score": 1.0,
+                "support": 40.0
+            }
+        },
+        "feature_importances": {
+            "Age": 0.1559600292019493,
+            "Gender": 0.004315654389885669,
+            "Annual Income (k$)": 0.34553231800088047,
+            "Spending Score (1-100)": 0.49419199840728456
+        },
+        "academic_honesty_note": "The 100% test accuracy is attributable to the fact that the High-Value target label is deterministically derived from cluster centroids defined on Annual Income and Spending Score, both of which are accessible to the Random Forest. The classifier acts as an ultra-fast boundary emulator, and CalibratedClassifierCV provides genuine probability scaling rather than raw tree votes."
+    },
+    "business_cohort_metrics": {
+        "high_value_customer_count": 39,
+        "high_value_percentage_of_base": 0.195,
+        "high_value_share_of_total_spending": 0.31902390438247014,
+        "high_value_share_of_total_income": 0.27864927344782037,
+        "high_value_average_income_k": 86.53846153846153,
+        "high_value_average_spending_score": 82.12820512820512,
+        "high_value_average_age": 32.69230769230769,
+        "persona_summary": [
+            {
+                "Persona": "Budget Customers",
+                "count": 23,
+                "avg_age": 45.22,
+                "avg_income": 26.3,
+                "avg_spending": 20.91,
+                "pct_high_value": 0.0,
+                "high_value_count": 0
+            },
+            {
+                "Persona": "Careful Spenders",
+                "count": 35,
+                "avg_age": 41.11,
+                "avg_income": 88.2,
+                "avg_spending": 17.11,
+                "pct_high_value": 0.0,
+                "high_value_count": 0
+            },
+            {
+                "Persona": "Impulsive Shoppers",
+                "count": 22,
+                "avg_age": 25.27,
+                "avg_income": 25.73,
+                "avg_spending": 79.36,
+                "pct_high_value": 0.0,
+                "high_value_count": 0
+            },
+            {
+                "Persona": "Premium Customers",
+                "count": 39,
+                "avg_age": 32.69,
+                "avg_income": 86.54,
+                "avg_spending": 82.13,
+                "pct_high_value": 1.0,
+                "high_value_count": 39
+            },
+            {
+                "Persona": "Standard Customers",
+                "count": 81,
+                "avg_age": 42.72,
+                "avg_income": 55.3,
+                "avg_spending": 49.52,
+                "pct_high_value": 0.0,
+                "high_value_count": 0
+            }
+        ]
+    }
+}

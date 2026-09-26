@@ -1,0 +1,14 @@
+Category,Metric,Value
+Dataset,Total Customers,200
+Clustering,Optimal Clusters (K),5
+Clustering,Silhouette Score,0.5547
+Clustering,Inertia (K=5),65.57
+Classification,Test Accuracy,1.0
+Classification,Test Precision,1.0
+Classification,Test Recall,1.0
+Classification,Test F1-Score,1.0
+Classification,ROC-AUC Score,1.0
+Classification,Brier Score Loss,0.003579
+Business Cohort,High-Value Customers,39
+Business Cohort,High-Value Base %,19.5%
+Business Cohort,High-Value Spend Share %,31.9%
