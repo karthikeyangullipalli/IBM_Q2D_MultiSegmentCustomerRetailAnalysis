@@ -40,6 +40,7 @@
   * Duplicate Records / IDs: 0
   * Attribute Ranges: Age [18, 70], Annual Income [$15k, $137k], Spending Score [1, 99]
   * Column Normalization: Non-destructive in-memory mapping translates historical header alias `"Genre"` to `"Gender"`.
+  * Metric Context: Spending Score is an assigned behavioral index (1-100), not actual currency amounts.
 
 ---
 
@@ -62,7 +63,7 @@
 ### 3.2 High-Value Business Rule
 * **Rule**: Centroid Income $\ge \text{Median Income } (\$61.5\text{k})$ AND Centroid Spending $\ge \text{Median Spending } (50.0)$.
 * **High-Value Cohort**: **Premium Customers** ($n=39$, $19.5\%$ of customer base).
-* **Commercial Contribution**: Accounts for **31.90%** of total mall spending volume.
+* **Cohort Contribution**: Accounts for **31.90%** of the aggregate Spending Score across the dataset.
 
 ### 3.3 Supervised Classification & Calibration
 * **Algorithm**: `RandomForestClassifier(n_estimators=200, random_state=42)` wrapped in `CalibratedClassifierCV(method='sigmoid', cv=5)` (Platt scaling).
@@ -78,7 +79,7 @@
   * Confusion Matrix: TN=32, FP=0, FN=0, TP=8
 * **Feature Importances**: Spending Score ($49.4\%$), Annual Income ($34.6\%$), Age ($15.6\%$), Gender ($0.4\%$).
 * **Academic Honesty Disclosure**:
-  The 100% test accuracy is expected and honest. The High-Value ground truth label was derived deterministically from cluster centroids defined on Annual Income and Spending Score, and those identical features are accessible to the Random Forest. The classifier acts as an ultra-fast boundary emulator to bypass re-clustering for new shoppers. CalibratedClassifierCV ensures predicted probabilities represent smooth, authentic confidence rather than binary tree agreement.
+  The 100% test accuracy is expected and honest. The High-Value ground truth label was derived deterministically from cluster centroids defined on Annual Income and Spending Score, and those identical features are accessible to the Random Forest. The classifier learns the deterministic decision boundary induced by the income and spending thresholds used to define the High-Value cohort. Sigmoid calibration transforms raw classifier scores into probability estimates intended to be better calibrated.
 
 ---
 
@@ -95,7 +96,7 @@
 
 * **Framework**: Streamlit Multi-Page Architecture
 * **Verified Pages (Zero Runtime Exceptions across all pages)**:
-  1. `app.py`: Landing view with core headline metrics and navigation cards.
+  1. `app.py`: Landing view with summary headline metrics and navigation cards.
   2. `pages/1_Dashboard.py`: Interactive Plotly 2D clustering scatter plot, centroid crosshairs, and persona cards.
   3. `pages/2_Predict.py`: Customer scoring input form with calibrated confidence and centroid distance explanation.
   4. `pages/3_Insights.py`: Empirical cluster selection curves ($K$ vs Inertia, $K$ vs Silhouette) and feature importance.
@@ -122,16 +123,16 @@
 | **Case Study Report (Word)** | `docs/case_study_report.docx` | Rebuilt with student details & figures |
 | **Case Study Report (Markdown)** | `docs/case_study_report.md` | Synchronized |
 | **Presentation Deck (PPTX)** | `docs/presentation.pptx` | 15 widescreen slides |
-| **Viva Preparation Guide** | `docs/viva_questions.md` | 32 questions + inconsistency defense |
+| **Viva Preparation Guide** | `docs/viva_questions.md` | 32 questions + technical clarifications |
 | **Live Screenshots** | `screenshots/*.png` | 6 genuine application captures |
 
 ---
 
 ## 7. Known Academic Limitations
 
-1. **Dataset Size**: The Kaggle dataset comprises 200 records. It serves as an optimal proof of concept, but lacks transactional timestamps or seasonal multi-year volume.
-2. **Feature Breadth**: Lacks product-level SKU details, basket item counts, and return history.
-3. **Local Deployment**: Prototype runs as a local web server (`http://localhost:8501`) suitable for internship evaluation rather than a distributed cloud cluster.
+1. **Dataset Size**: The Kaggle dataset comprises 200 static records. It serves as an effective proof of concept, but lacks transactional timestamps or multi-year seasonal depth.
+2. **Feature Breadth**: Lacks product-level SKU details, basket item counts, and return history. Spending Score is an assigned index (1-100), not a currency volume.
+3. **Local Deployment**: Prototype runs as a local web server (`http://localhost:8501`) suitable for internship evaluation rather than a multi-tenant cloud application.
 
 ---
 

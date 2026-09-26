@@ -55,16 +55,16 @@ This ensures naming is reproducible and grounded in data rather than subjective 
 ### 9. What is your exact definition of a "High-Value Customer"?
 **Answer**: A customer is High-Value if and only if their cluster centroid meets or exceeds both dataset medians:
 $$\text{Centroid Income} \ge \text{Median Income } (\$61.5\text{k}) \quad \text{AND} \quad \text{Centroid Spending} \ge \text{Median Spending } (50.0)$$
-Under this transparent rule, exactly one cluster qualifies: **Premium Customers**. They represent 39 customers (19.5% of base) but command **31.90%** of aggregate store spending.
+Under this transparent rule, exactly one cluster qualifies: **Premium Customers**. They represent 39 customers (19.5% of base), and the Premium Customer segment accounts for **31.90%** of the aggregate Spending Score across the dataset.
 
 ### 10. Why use Random Forest for the supervised classification stage?
-**Answer**: Random Forest is an ensemble of decision trees utilizing bagging (bootstrap aggregating) and random feature subspace projection. It handles non-linear decision boundaries without requiring explicit kernel transformations, exhibits resistance to overfitting, and provides natural feature importance measures. In our system, it learns the cluster boundaries to score new incoming customers in milliseconds without re-running K-Means.
+**Answer**: Random Forest is an ensemble of decision trees utilizing bagging (bootstrap aggregating) and random feature subspace projection. It handles non-linear decision boundaries without requiring explicit kernel transformations, exhibits resistance to overfitting, and provides natural feature importance measures. In our system, it learns the cluster boundaries to score customer profiles via instant inference without re-running K-Means.
 
 ### 11. What features are fed to the Random Forest classifier?
 **Answer**: Four features: `Age`, `Gender` (binary encoded: Male=0, Female=1), `Annual Income (k$)`, and `Spending Score (1-100)`.
 
 ### 12. Why not use a simpler model like Logistic Regression?
-**Answer**: Logistic Regression creates a linear hyperplane. While the High-Value quadrant is broadly separable in 2D, Random Forest naturally captures multi-feature non-linear interactions across Age, Gender, Income, and Spending without requiring manual polynomial feature engineering.
+**Answer**: Logistic Regression creates a linear boundary. While the High-Value quadrant is broadly separable in 2D, Random Forest naturally captures multi-feature non-linear interactions across Age, Gender, Income, and Spending without requiring manual polynomial feature engineering.
 
 ### 13. What is train/test split and why is it used?
 **Answer**: Splitting data into distinct training (80%, $n=160$) and testing (20%, $n=40$) partitions evaluates model generalization on unseen observations, ensuring the model has not merely memorized the training samples.
@@ -98,10 +98,10 @@ It penalizes extreme trade-offs between precision and recall. Our model achieved
 ### 20. What is Brier Score Loss?
 **Answer**: Brier score measures the mean squared difference between predicted probabilities and actual binary outcomes ($y \in \{0, 1\}$):
 $$\text{Brier} = \frac{1}{N} \sum_{i=1}^{N} (p_i - y_i)^2$$
-Scores range from 0 (perfect probability calibration) to 1. Our model achieved an exceptionally low Brier score of **0.00358**, confirming superior probability calibration.
+Scores range from 0 (perfect probability calibration) to 1. Our model achieved an exceptionally low Brier score of **0.00358**, confirming low mean squared probability error.
 
 ### 21. What is Platt Scaling (Sigmoid Calibration) and why was it necessary?
-**Answer**: In standard Random Forest, `predict_proba()` is simply the fraction of trees voting for the positive class. When predicting a cleanly separable cluster-derived label, almost all 200 trees vote identically, collapsing probabilities to extreme 0% or 100% values. Platt scaling (`CalibratedClassifierCV(method='sigmoid', cv=5)`) fits a 1-D logistic regression model on held-out cross-validation folds to transform raw tree scores into smooth, authentic posterior probabilities matching real empirical likelihoods.
+**Answer**: In standard Random Forest, `predict_proba()` is simply the fraction of trees voting for the positive class. When predicting a cleanly separable cluster-derived label, almost all 200 trees vote identically, collapsing probabilities to extreme 0% or 100% values. Platt scaling (`CalibratedClassifierCV(method='sigmoid', cv=5)`) fits a 1-D logistic regression model on held-out cross-validation folds. Sigmoid calibration transforms raw classifier scores into probability estimates intended to be better calibrated.
 
 ### 22. What is Feature Importance and which features matter most?
 **Answer**: Gini impurity-based feature importance measures the total reduction in criterion brought by that feature across all trees:
@@ -120,42 +120,43 @@ Income and Spending account for 84.0% of decision weight, which validates that c
 ### 24. What are the limitations of the Mall Customer dataset?
 **Answer**:
 * Sample size is modest ($N = 200$).
-* Cross-sectional snapshot lacking time-series purchase history (recency, frequency).
+* Static snapshot lacking time-series purchase history (recency, frequency).
+* The Spending Score is an assigned index (1-100), not actual currency amounts.
 * No product categories, return rates, or margins.
 
-### 25. How would you adapt this system for real-world enterprise transactional data?
+### 25. How would you adapt this system for enterprise transactional data?
 **Answer**:
-* Engineer RFM (Recency, Frequency, Monetary) features from raw POS sales logs.
+* Engineer RFM (Recency, Frequency, Monetary) features from point-of-sale logs.
 * Extract basket diversity, return rates, and seasonal purchase trends.
-* Replace static CSV loading with streaming Kafka/Snowflake connectors.
+* Replace static CSV loading with streaming data warehouse connectors.
 * Implement rolling retraining to accommodate seasonal customer drift.
 
 ### 26. What changes would you make to deploy this in production?
 **Answer**:
 * Package inference inside a containerized FastAPI service with Docker.
-* Store model artifacts in an enterprise model registry (MLflow).
-* Connect persistent PostgreSQL database for inference audit logging.
-* Set up CI/CD pipelines with automated regression testing.
+* Store model artifacts in an enterprise model registry.
+* Connect persistent database for inference audit logging.
+* Set up automated CI/CD pipelines with regression testing.
 
 ---
 
-## Part 2: Addressing Evaluator Questions on Inconsistencies & Results
+## Part 2: Technical Accuracy & Evaluator Clarifications
 
-### 27. "Your test set accuracy is 100%. Did your model overfit or did you make an error?"
+### 27. "Your test set accuracy is 100%. Did your model overfit or is there an explanation?"
 **Answer**:
-"The 100% test accuracy is expected, genuine, and academically transparent. It is not an artifact of data leakage or overfitting. In our hybrid pipeline, the High-Value ground truth label was derived deterministically from cluster centroids defined on Annual Income and Spending Score. Because those exact two features are provided as inputs to the Random Forest, the classifier acts as an ultra-fast boundary emulator, perfectly learning the planar hyperplane. Rather than predicting noisy, unobservable real-world human behavior, the classifier's purpose is to bypass re-clustering for new shoppers. To avoid misleading overconfidence from extreme tree votes, we specifically wrapped the model in `CalibratedClassifierCV` with Platt scaling, yielding a calibrated Brier score loss of 0.00358."
+"The 100% test accuracy is expected, genuine, and academically transparent. It is not an artifact of data leakage or overfitting. In our hybrid pipeline, the High-Value ground truth label was derived deterministically from cluster centroids defined on Annual Income and Spending Score. Because those exact two features are provided as inputs to the Random Forest, the classifier learns the deterministic decision boundary induced by the income and spending thresholds used to define the High-Value cohort. Rather than predicting noisy, unobservable real-world human behavior, the classifier's purpose is to bypass re-clustering for new customer profiles. To avoid misleading overconfidence from raw tree votes, we wrapped the model in `CalibratedClassifierCV` with Platt scaling. Sigmoid calibration transforms raw classifier scores into probability estimates intended to be better calibrated, yielding a Brier score loss of 0.00358."
 
-### 28. "Why does the earlier draft report mention 21 or 23 tests, while the codebase has 32?"
+### 28. "How does your test suite verify the pipeline?"
 **Answer**:
-"The earlier numbers (21 and 23 tests) were interim milestones during early development when only data loading and basic clustering were unit-tested. As the pipeline matured, we expanded test coverage to include comprehensive business rules, centroid explainability grounding, Platt calibration probability bounds, non-degenerate batch predictions, and schema alias edge cases. The verified, executable test suite now contains exactly 32 tests (`pytest tests/test_pipeline.py`), all of which pass cleanly in 12.23 seconds."
+"The verified, executable test suite contains exactly 32 tests (`pytest tests/test_pipeline.py`), covering data loading, schema validation, non-destructive header normalization, automated K-selection, business rules, Platt calibration probability bounds, non-degenerate batch predictions, and centroid explainability grounding, all of which pass cleanly in 12.23 seconds."
 
-### 29. "Why did one draft mention an 82% accuracy Random Forest without Spending Score and a Vercel deployment?"
+### 29. "Why are Income and Spending Score the primary drivers?"
 **Answer**:
-"During early ideation, an alternative conceptual design ('Version B') was explored that attempted to predict High-Value status using only demographic features (Age, Gender, Income) while excluding Spending Score, deployed as a static HTML page. However, empirical evaluation proved that excluding Spending Score reduced accuracy to 82% and crippled persona actionability. We formally selected Version A (Streamlit multi-page app with full feature set, 200-tree calibrated forest, and 100% test accuracy) as the superior, cohesive architecture. All obsolete references to Version B have been completely eliminated."
+"Feature importance analysis confirms that Spending Score (49.4%) and Annual Income (34.6%) together account for 84.0% of classification power. This confirms that the supervised classifier aligns closely with the 2D behavioral segmentation plane, while Age (15.6%) and Gender (0.4%) provide secondary demographic profiling."
 
-### 30. "Why didn't you deploy this on Vercel or cloud platforms?"
+### 30. "Why is Streamlit the chosen deployment framework?"
 **Answer**:
-"The project is implemented in Python using Streamlit, which requires an active Python execution runtime to serve dynamic Plotly visualizations and execute machine learning inference models (`joblib`). Vercel is optimized for static JAMstack or Node.js serverless functions, which cannot run long-lived Python Streamlit processes. The application is designed for instant one-command local execution (`streamlit run app.py`) or containerized deployment on Streamlit Community Cloud."
+"The system requires an active Python execution runtime to serve dynamic Plotly visualizations and execute Scikit-Learn machine learning inference models (`joblib`). Streamlit provides an interactive, stateful multi-page Python web application architecture designed for local execution or containerized deployment."
 
 ### 31. "How do you explain the distance grounding in your prediction page?"
 **Answer**:
@@ -163,4 +164,4 @@ Income and Spending account for 84.0% of decision weight, which validates that c
 
 ### 32. "Why use Joblib instead of Pickle for model serialization?"
 **Answer**:
-"`joblib.dump` and `joblib.load` are optimized specifically for Python objects containing large internal NumPy arrays, which Scikit-Learn estimators (like 200-tree Random Forests and KMeans centroids) rely on. Joblib uses efficient memory-mapping and compression, resulting in faster disk I/O and lower runtime overhead than standard Python `pickle`."
+"`joblib.dump` and `joblib.load` are optimized specifically for Python objects containing large internal NumPy arrays, which Scikit-Learn estimators rely on. Joblib uses efficient memory-mapping and compression, resulting in faster disk I/O and lower runtime overhead than standard Python `pickle`."

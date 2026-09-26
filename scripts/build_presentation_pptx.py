@@ -1,7 +1,7 @@
 """
 scripts/build_presentation_pptx.py
 Generates a presentation-ready 15-slide PowerPoint deck for the
-Retail Customer Intelligence project using python-pptx.
+Retail Customer Intelligence project using python-pptx with precise technical language.
 """
 
 from pathlib import Path
@@ -9,7 +9,6 @@ import pptx
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN
 from pptx.enum.shapes import MSO_SHAPE
 
 DOCS_DIR = Path(__file__).resolve().parent.parent / "docs"
@@ -24,17 +23,14 @@ def create_deck():
     NAVY = RGBColor(0x17, 0x20, 0x33)
     SLATE = RGBColor(0x3B, 0x4A, 0x68)
     COPPER = RGBColor(0xC4, 0x7A, 0x44)
-    BG_LIGHT = RGBColor(0xF8, 0xFA, 0xFC)
     WHITE = RGBColor(0xFF, 0xFF, 0xFF)
     DARK_TEXT = RGBColor(0x1E, 0x29, 0x3B)
-    MUTED_TEXT = RGBColor(0x64, 0x74, 0x8B)
     IBM_BLUE = RGBColor(0x00, 0x43, 0xCE)
     GREEN = RGBColor(0x10, 0x7C, 0x41)
 
     blank_layout = prs.slide_layouts[6] # Blank slide
 
     def add_header(slide, title, category="IBMQ2D INTERNSHIP PROJECT"):
-        # Header background banner
         header_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.4), Inches(11.7), Inches(1.1))
         tf = header_box.text_frame
         tf.word_wrap = True
@@ -141,26 +137,26 @@ def create_deck():
         "Dataset: Kaggle Mall Customer Segmentation (200 records, 5 core features).",
         "Dual Machine Learning Methodology: Unsupervised K-Means clustering + Calibrated Random Forest.",
         "Optimal Cluster Count: Evidence-based selection K = 5 (Silhouette score = 0.5547).",
-        "High-Value Cohort: 19.5% of customer base commanding 31.90% of aggregate mall spending.",
-        "Interactive Deployment: 5-page Streamlit application verified by 32 automated tests."
+        "High-Value Cohort: 19.5% of customer base commanding 31.90% of aggregate Spending Score.",
+        "Interactive Delivery: 5-page Streamlit application verified by 32 automated tests."
     ], NAVY)
 
     # -------------------------------------------------------------
-    # SLIDE 3: Problem Statement & Industrial Need
+    # SLIDE 3: Problem Statement
     # -------------------------------------------------------------
     s3 = prs.slides.add_slide(blank_layout)
     add_header(s3, "Problem Statement: The Retail Marketing Dilemma")
     add_card(s3, Inches(0.8), Inches(1.8), Inches(5.6), Inches(5.0), "The Core Retail Challenge", [
         "Homogeneous Marketing Trap: Many retailers allocate marketing spend evenly across all shoppers.",
-        "Extreme Asymmetry: Spending contribution is highly uneven; treating top spenders and bargain hunters identically creates waste.",
-        "Under-Investment: High-margin premium shoppers receive generic promotional noise.",
-        "Over-Investment: Budget shoppers receive expensive loyalty discounts that never yield margin."
+        "Behavioral Asymmetry: Customer engagement is highly uneven; treating top spenders and bargain hunters identically creates waste.",
+        "Under-Investment: Highly engaged shoppers receive generic promotional noise.",
+        "Over-Investment: Budget shoppers receive loyalty discounts that fail to generate margin."
     ], COPPER)
     add_card(s3, Inches(6.8), Inches(1.8), Inches(5.7), Inches(5.0), "The Solution Requirements", [
         "Automated Persona Discovery: Segment customer base into actionable behavioral clusters from real income & spend data.",
         "Auditable High-Value Rule: Transparent, explainable threshold identifying top commercial contributors.",
-        "Sub-Second Classification: Score brand new customers instantly from basic attributes without re-running K-Means.",
-        "Actionable Business Guidance: Map every persona directly to a tailored marketing action."
+        "Instant Inference: Score incoming customer profiles in milliseconds without re-running K-Means.",
+        "Actionable Guidance: Map every persona directly to a tailored marketing action."
     ], NAVY)
 
     # -------------------------------------------------------------
@@ -175,10 +171,10 @@ def create_deck():
     ], NAVY)
     add_card(s4, Inches(4.8), Inches(1.8), Inches(3.7), Inches(5.0), "2. Calibrated Classifier", [
         "Train 200-tree Random Forest on Age, Gender, Income, Spending Score.",
-        "Apply CalibratedClassifierCV (Platt scaling) over 5-fold CV.",
-        "Achieve authentic posterior likelihoods instead of extreme 0/1 tree votes."
+        "Apply CalibratedClassifierCV (sigmoid/Platt scaling) over 5-fold CV.",
+        "Transform raw scores into probability estimates intended to be better calibrated."
     ], IBM_BLUE)
-    add_card(s4, Inches(8.8), Inches(1.8), Inches(3.7), Inches(5.0), "3. Production Web App", [
+    add_card(s4, Inches(8.8), Inches(1.8), Inches(3.7), Inches(5.0), "3. Interactive Web App", [
         "Interactive 5-page Streamlit UI with custom typography and CSS cards.",
         "Dynamic Plotly 2D clustering and silhouette curves.",
         "Zero-exception reliability backed by 32 automated pytest tests."
@@ -246,9 +242,9 @@ def create_deck():
     s8 = prs.slides.add_slide(blank_layout)
     add_header(s8, "Customer Personas: Centroid-Based Behavioral Profiling")
     add_card(s8, Inches(0.8), Inches(1.8), Inches(5.6), Inches(5.0), "The Five Natural Personas", [
-        "Premium Customers (n=39, 19.5%): Avg Income $86.5k, Avg Spend 82.1. Top revenue drivers.",
+        "Premium Customers (n=39, 19.5%): Avg Income $86.5k, Avg Spend 82.1. Top engagement group.",
         "Careful Spenders (n=35, 17.5%): Avg Income $88.3k, Avg Spend 17.1. High income, low engagement.",
-        "Standard Customers (n=81, 40.5%): Avg Income $55.3k, Avg Spend 49.5. The broad middle class.",
+        "Standard Customers (n=81, 40.5%): Avg Income $55.3k, Avg Spend 49.5. The broad middle tier.",
         "Impulsive Shoppers (n=22, 11.0%): Avg Income $25.7k, Avg Spend 79.4. Low income, heavy spending.",
         "Budget Customers (n=23, 11.5%): Avg Income $26.3k, Avg Spend 20.9. Frugal, price-sensitive shoppers."
     ], NAVY)
@@ -271,15 +267,15 @@ def create_deck():
         "Deterministic Target: Grounded in real population medians, not arbitrary scoring thresholds.",
         "Exclusive Qualification: Exactly one persona qualifies — Premium Customers (Cluster 3)."
     ], IBM_BLUE)
-    add_card(s9, Inches(6.8), Inches(1.8), Inches(5.7), Inches(5.0), "Disproportionate Commercial Impact", [
+    add_card(s9, Inches(6.8), Inches(1.8), Inches(5.7), Inches(5.0), "Disproportionate Impact", [
         "Cohort Count: 39 customers (19.5% of total base).",
         "Income Share: High-Value customers represent 27.86% of total customer income.",
-        "Spending Share: High-Value customers command 31.90% of total store spending volume.",
-        "Strategic Justification: Prioritizing loyalty spend on this 19.5% cohort directly protects ~32% of total retail turnover."
+        "Spending Score Share: Premium Customers account for 31.90% of the aggregate Spending Score across the dataset.",
+        "Strategic Justification: Prioritizing loyalty spend on this 19.5% cohort protects the primary high-engagement segment."
     ], GREEN)
 
     # -------------------------------------------------------------
-    # SLIDE 10: Supervised Classification & Platt Calibration
+    # SLIDE 10: Supervised Classification & Sigmoid Calibration
     # -------------------------------------------------------------
     s10 = prs.slides.add_slide(blank_layout)
     add_header(s10, "Supervised Classification & Probability Calibration")
@@ -287,13 +283,13 @@ def create_deck():
         "Base Model: RandomForestClassifier(n_estimators=200, random_state=42).",
         "Input Features: Age, Gender (binary encoded), Annual Income (k$), Spending Score (1-100).",
         "Train / Test Partition: 80% train (160 rows), 20% test (40 rows), stratified by High-Value class.",
-        "Purpose: Real-time customer inference in milliseconds without re-running K-Means."
+        "Purpose: Instant customer inference in milliseconds without re-running K-Means."
     ], NAVY)
-    add_card(s10, Inches(6.8), Inches(1.8), Inches(5.7), Inches(5.0), "Why Platt Scaling is Essential", [
-        "The Collapse Problem: Because the target is deterministically separable, raw Random Forest tree votes collapse to extreme 0% or 100%.",
-        "CalibratedClassifierCV: Wraps the forest with sigmoid (Platt) scaling across 5-fold cross-validation.",
-        "Empirical Posterior: Maps decision margins into authentic posterior likelihoods matching empirical outcomes.",
-        "Brier Score Loss: Achieves 0.00358, confirming superior calibration accuracy."
+    add_card(s10, Inches(6.8), Inches(1.8), Inches(5.7), Inches(5.0), "Calibration Mechanics", [
+        "Decision Boundary: The classifier learns the deterministic decision boundary induced by the income and spending thresholds used to define the High-Value cohort.",
+        "The Collapse Problem: Raw Random Forest tree votes collapse to extreme 0% or 100% on cleanly separable data.",
+        "Sigmoid Calibration: Transforms raw classifier scores into probability estimates intended to be better calibrated.",
+        "Brier Score Loss: Achieves 0.00358, confirming low mean squared probability error."
     ], IBM_BLUE)
 
     # -------------------------------------------------------------
@@ -327,7 +323,7 @@ def create_deck():
     add_card(s12, Inches(7.9), Inches(1.8), Inches(4.6), Inches(5.0), "Application Page Overview", [
         "1. Home (app.py): System purpose & headline metrics.",
         "2. Dashboard: 2D customer scatter plot with centroid markers & persona summary cards.",
-        "3. Predict: Real-time customer scoring with grounded centroid explanations.",
+        "3. Predict: Customer scoring with grounded centroid explanations.",
         "4. Insights: Elbow/silhouette curves, feature importances & business insights.",
         "5. Data Explorer: Multi-column filterable customer database with CSV export."
     ], NAVY)
@@ -341,8 +337,8 @@ def create_deck():
     if pred_img.exists():
         s13.shapes.add_picture(str(pred_img), Inches(0.8), Inches(1.8), Inches(6.8), Inches(5.0))
     add_card(s13, Inches(7.9), Inches(1.8), Inches(4.6), Inches(5.0), "Explainable AI by Design", [
-        "Instant Scoring: Inputs Age, Gender, Income, Spending -> Predicts Persona & High-Value status.",
-        "Calibrated Confidence: Reports realistic percentage likelihood rather than raw agreement.",
+        "Instant Inference: Inputs Age, Gender, Income, Spending -> Predicts Persona & High-Value status.",
+        "Calibrated Confidence: Reports percentage likelihood intended to be better calibrated.",
         "Distance Grounding: Computes Euclidean distance to assigned vs next-closest centroid.",
         "Delta Explanations: Quantifies exact distance from dataset & segment averages."
     ], IBM_BLUE)
@@ -354,9 +350,9 @@ def create_deck():
     add_header(s14, "Limitations & Academic Transparency")
     add_card(s14, Inches(0.8), Inches(1.8), Inches(5.6), Inches(5.0), "Honest Disclosure on 100% Accuracy", [
         "Deterministic Target: The High-Value label is derived from cluster centroids defined on Income and Spending.",
-        "Accessible Features: Because Income and Spending are also classifier inputs, the model acts as an ultra-fast boundary emulator.",
+        "Accessible Features: Because Income and Spending are also classifier inputs, the classifier learns the deterministic decision boundary induced by the income and spending thresholds used to define the High-Value cohort.",
         "Academically Sound: The 100% score is expected and honest; it does not claim to predict noisy real-world churn.",
-        "Platt Scaling Role: Calibration ensures probabilities reflect real uncertainty near decision boundaries."
+        "Calibration Role: Sigmoid calibration transforms raw classifier scores into probability estimates intended to be better calibrated."
     ], COPPER)
     add_card(s14, Inches(6.8), Inches(1.8), Inches(5.7), Inches(5.0), "Data & System Constraints", [
         "Sample Size: 200 customer rows — suitable for proof-of-concept, but lacks seasonal depth.",
@@ -372,12 +368,12 @@ def create_deck():
     add_header(s15, "Conclusion & Future Production Roadmap")
     add_card(s15, Inches(0.8), Inches(1.8), Inches(5.6), Inches(5.0), "Internship Achievements", [
         "Rigorous Methodology: Fully automated K-selection (K=5, Silhouette 0.5547).",
-        "Transparent Business Logic: Median-based High-Value definition (19.5% base = 31.9% spend).",
+        "Transparent Business Logic: Median-based High-Value rule (19.5% base accounts for 31.90% of aggregate Spending Score).",
         "Operational Deployment: 5-page Streamlit web application with professional design.",
         "Complete QA Verification: 32 unit and integration tests passing with 100% success."
     ], GREEN)
     add_card(s15, Inches(6.8), Inches(1.8), Inches(5.7), Inches(5.0), "Future Production Roadmap", [
-        "Data Warehouse Integration: Direct SQL connector to Snowflake or BigQuery for real-time batch scoring.",
+        "Data Warehouse Integration: Direct SQL connector to Snowflake or BigQuery for batch scoring.",
         "Multi-Dimensional RFM: Incorporate purchase recency, basket frequency, and category affinity.",
         "Microservice API: Wrap core inference in FastAPI with Docker containerization.",
         "Automated Retraining: Scheduled Drift detection & automated model recalibration pipeline."

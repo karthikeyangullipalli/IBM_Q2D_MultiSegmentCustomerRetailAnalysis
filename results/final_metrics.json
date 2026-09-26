@@ -13,7 +13,8 @@
             "Gender",
             "Annual Income (k$)",
             "Spending Score (1-100)"
-        ]
+        ],
+        "spending_metric_note": "The dataset contains Spending Score (1-100), an assigned behavioral index, not monetary currency amounts."
     },
     "clustering_metrics": {
         "optimal_k": 5,
@@ -120,12 +121,12 @@
             "Annual Income (k$)": 0.34553231800088047,
             "Spending Score (1-100)": 0.49419199840728456
         },
-        "academic_honesty_note": "The 100% test accuracy is attributable to the fact that the High-Value target label is deterministically derived from cluster centroids defined on Annual Income and Spending Score, both of which are accessible to the Random Forest. The classifier acts as an ultra-fast boundary emulator, and CalibratedClassifierCV provides genuine probability scaling rather than raw tree votes."
+        "academic_honesty_note": "The classifier learns the deterministic decision boundary induced by the income and spending thresholds used to define the High-Value cohort. Sigmoid calibration transforms raw classifier scores into probability estimates intended to be better calibrated."
     },
     "business_cohort_metrics": {
         "high_value_customer_count": 39,
         "high_value_percentage_of_base": 0.195,
-        "high_value_share_of_total_spending": 0.31902390438247014,
+        "high_value_share_of_aggregate_spending_score": 0.31902390438247014,
         "high_value_share_of_total_income": 0.27864927344782037,
         "high_value_average_income_k": 86.53846153846153,
         "high_value_average_spending_score": 82.12820512820512,

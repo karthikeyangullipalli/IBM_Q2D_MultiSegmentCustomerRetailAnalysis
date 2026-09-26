@@ -11,4 +11,4 @@ Classification,ROC-AUC Score,1.0
 Classification,Brier Score Loss,0.003579
 Business Cohort,High-Value Customers,39
 Business Cohort,High-Value Base %,19.5%
-Business Cohort,High-Value Spend Share %,31.9%
+Business Cohort,Aggregate Spending Score Share %,31.9%

@@ -117,6 +117,7 @@ def run_comprehensive_evaluation(
             "missing_values": int(df.isnull().sum().sum()),
             "clustering_features": CLUSTER_FEATURES,
             "classifier_features": FEATURE_COLUMNS,
+            "spending_metric_note": "The dataset contains Spending Score (1-100), an assigned behavioral index, not monetary currency amounts.",
         },
         "clustering_metrics": {
             "optimal_k": int(kmeans_model.n_clusters),
@@ -147,17 +148,15 @@ def run_comprehensive_evaluation(
             "classification_report": clf_report,
             "feature_importances": feature_importances,
             "academic_honesty_note": (
-                "The 100% test accuracy is attributable to the fact that the High-Value "
-                "target label is deterministically derived from cluster centroids defined on "
-                "Annual Income and Spending Score, both of which are accessible to the "
-                "Random Forest. The classifier acts as an ultra-fast boundary emulator, and "
-                "CalibratedClassifierCV provides genuine probability scaling rather than raw tree votes."
+                "The classifier learns the deterministic decision boundary induced by the income "
+                "and spending thresholds used to define the High-Value cohort. Sigmoid calibration "
+                "transforms raw classifier scores into probability estimates intended to be better calibrated."
             ),
         },
         "business_cohort_metrics": {
             "high_value_customer_count": int(summary["high_value_count"]),
             "high_value_percentage_of_base": float(summary["high_value_pct"]),
-            "high_value_share_of_total_spending": float(
+            "high_value_share_of_aggregate_spending_score": float(
                 summary["high_value_stats"]["share_of_total_spending"]
             ),
             "high_value_share_of_total_income": float(
@@ -189,7 +188,7 @@ def run_comprehensive_evaluation(
         {"Category": "Classification", "Metric": "Brier Score Loss", "Value": round(brier_score_loss(y_test, y_proba), 6)},
         {"Category": "Business Cohort", "Metric": "High-Value Customers", "Value": int(summary["high_value_count"])},
         {"Category": "Business Cohort", "Metric": "High-Value Base %", "Value": f"{summary['high_value_pct']*100:.1f}%"},
-        {"Category": "Business Cohort", "Metric": "High-Value Spend Share %", "Value": f"{summary['high_value_stats']['share_of_total_spending']*100:.1f}%"},
+        {"Category": "Business Cohort", "Metric": "Aggregate Spending Score Share %", "Value": f"{summary['high_value_stats']['share_of_total_spending']*100:.1f}%"},
     ]
     csv_path = results_dir / "final_metrics.csv"
     pd.DataFrame(summary_rows).to_csv(csv_path, index=False)
